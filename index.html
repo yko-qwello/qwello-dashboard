@@ -1480,6 +1480,26 @@ initPage2();
 initPage3();
 initPage4();
 
+// Debounced resize handler: redraw whichever page is currently visible.
+let __resizeTimer = null;
+window.addEventListener('resize', () => {
+  if (__resizeTimer) clearTimeout(__resizeTimer);
+  __resizeTimer = setTimeout(() => {
+    try {
+      if (document.getElementById('page2') && document.getElementById('page2').style.display !== 'none') {
+        renderPage2();
+      } else if (document.getElementById('page3') && document.getElementById('page3').style.display !== 'none') {
+        renderPage3();
+      } else if (document.getElementById('page4') && document.getElementById('page4').style.display !== 'none') {
+        renderPage4();
+      }
+      // Page 1 (table) reflows naturally with CSS, no redraw needed.
+    } catch (e) {
+      console.warn('Resize redraw failed:', e);
+    }
+  }, 150);
+});
+
 // ========== PAGE 4: YoY Comparison ==========
 const page4 = { level: 'network', entity: '', metric: 'revenue' };
 
